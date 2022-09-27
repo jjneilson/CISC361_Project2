@@ -11,6 +11,8 @@
 #include <signal.h>
 #include "sh.h"
 
+#define BUFFERSIZE 128
+
 int sh( int argc, char **argv, char **envp )
 {
   char *prompt = calloc(PROMPTMAX, sizeof(char));
@@ -38,23 +40,31 @@ int sh( int argc, char **argv, char **envp )
 
   /* Put PATH into a linked list */
   pathlist = get_path();
-
+  
   while ( go )
   {
+    char ans[BUFFERSIZE];
+    int len;
     /* print your prompt */
-
+    printf("What command to you want to execute?\n");
     /* get command line and process */
-
+    if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
+	    len = (int) strlen(ans);
+	    ans[len - 1] = '\0';
+    }
     /* check for each built in command and implement */
-
+	if (strcmp(ans, "exit") == 0) {
+		go = 0;
+	} else if (strcmp(ans, "other") == 0) {
+		printf("we here\n");
+	} 
      /*  else  program to exec */
-    {
+
        /* find it */
        /* do fork(), execve() and waitpid() */
 
       /* else */
         /* fprintf(stderr, "%s: Command not found.\n", args[0]); */
-    }
   }
   return 0;
 } /* sh() */
