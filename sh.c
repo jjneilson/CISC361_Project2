@@ -53,10 +53,10 @@ int sh( int argc, char **argv, char **envp )
 	    ans[len - 1] = '\0';
     }
     /* check for each built in command and implement */
-	if (strcmp(ans, "exit") == 0) {
+	if (strcmp(ans, "exit") == 0) { //exits
 		go = 0;
-	} else if (strcmp(ans, "other") == 0) {
-		printf("we here\n");
+	} else if (strcmp(ans, "other") == 0) { //prints shell pid
+		printf("we here");
 	} 
      /*  else  program to exec */
 
@@ -71,13 +71,22 @@ int sh( int argc, char **argv, char **envp )
 
 char *which(char *command, struct pathelement *pathlist )
 {
-   /* loop through pathlist until finding command and return it.  Return
+	struct pathelement *temp = pathlist;
+	char *cmd;
+	while (temp != NULL) {
+		sprintf(cmd, "%s/gcc", temp->element);
+		if (access(cmd, F_OK) == 0)
+			return cmd;
+		temp = temp->next;
+	}
+return NULL;
+/* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
-
 } /* which() */
 
 char *where(char *command, struct pathelement *pathlist )
 {
+
   /* similarly loop through finding all locations of command */
 } /* where() */
 
