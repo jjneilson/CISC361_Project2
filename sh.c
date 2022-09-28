@@ -79,6 +79,13 @@ char *which(char *command, struct pathelement *pathlist )
 			return cmd;
 		temp = temp->next;
 	}
+	/* while (temp != NULL) {
+	 *	if (strcmp(command, temp->element ) == 0) {
+	 *		return temp->element;
+	 *	}
+	 *	temp = temp->next;
+	 * }
+	*/
 return NULL;
 /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
