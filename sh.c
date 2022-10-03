@@ -51,14 +51,21 @@ int sh( int argc, char **argv, char **envp )
 	    len = (int) strlen(ans);
 	    ans[len - 1] = '\0';
     }
+	char s[2] = " ";
+	char *split = strtok(ans,s);
+	char *split2 = strtok(NULL,s);
     /* check for each built in command and implement */
-	if (strcmp(ans, "exit") == 0) { //exits
+	if (strcmp(split, "exit") == 0) { //exits
 		go = 0;
+	}
+	else if (strcmp(split, "which") == 0){
+		char* which_return = which(split2, pathlist);
+		printf("%s\n",which_return);
 	}
     /*  else  program to exec */
 	else{
-		if(which(ans,pathlist) == NULL){
-        	fprintf(stderr, "%s: Command not found.\n", ans);
+		if(which(split,pathlist) == NULL){
+        	fprintf(stderr, "%s: Command not found.\n", split);
 		}
 		else{
 			/* find it */
@@ -67,8 +74,9 @@ int sh( int argc, char **argv, char **envp )
 			pid_t pid;
 			if((pid = fork()) < 0){
 				printf("ERROR\n");
+			}
 			else if(pid == 0){
-				execve(ans);
+				
 			}
 			else{
 				waitpid(pid,NULL,0);
