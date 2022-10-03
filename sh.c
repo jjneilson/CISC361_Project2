@@ -26,8 +26,7 @@ int sh( int argc, char **argv, char **envp )
 
   uid = getuid();
   password_entry = getpwuid(uid);               /* get passwd info */
-  homedir = password_entry->pw_dir;		/* Home directory to start
-						  out with*/
+  homedir = password_entry->pw_dir;		/* Home directory to start out with*/
      
   if ( (pwd = getcwd(NULL, PATH_MAX+1)) == NULL )
   {
@@ -46,7 +45,7 @@ int sh( int argc, char **argv, char **envp )
     char ans[BUFFERSIZE];
     int len;
     /* print your prompt */
-    printf("What command to you want to execute?\n");
+    printf("[%s]> ", pwd);
     /* get command line and process */
     if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    len = (int) strlen(ans);
@@ -55,46 +54,51 @@ int sh( int argc, char **argv, char **envp )
     /* check for each built in command and implement */
 	if (strcmp(ans, "exit") == 0) { //exits
 		go = 0;
-	} else if (strcmp(ans, "other") == 0) { //prints shell pid
-		printf("we here");
-	} 
-     /*  else  program to exec */
-
-       /* find it */
-       /* do fork(), execve() and waitpid() */
-
-      /* else */
-        /* fprintf(stderr, "%s: Command not found.\n", args[0]); */
+	}
+    /*  else  program to exec */
+	else{
+		if(which(ans,pathlist) == NULL){
+        	fprintf(stderr, "%s: Command not found.\n", ans);
+		}
+		else{
+			/* find it */
+			char* exec_path = which(ans,pathlist);
+        	/* do fork(), execve() and waitpid() */
+			pid_t pid;
+			if((pid = fork()) < 0){
+				printf("ERROR\n");
+			else if(pid == 0){
+				execve(ans);
+			}
+			else{
+				waitpid(pid,NULL,0);
+			}
+		}
+	}
   }
   return 0;
 } /* sh() */
 
 char *which(char *command, struct pathelement *pathlist )
-{
+{ 
 	struct pathelement *temp = pathlist;
-	char *cmd;
-	while (temp != NULL) {
-		sprintf(cmd, "%s/gcc", temp->element);
-		if (access(cmd, F_OK) == 0)
-			return cmd;
+	char *cmd_path;
+	while (temp) {
+		snprintf(cmd_path, BUFFERSIZE, "%s/%s", temp->element, command);
+		if (access(cmd_path, X_OK) == 0) {
+			return cmd_path;
+		}
 		temp = temp->next;
 	}
-	/* while (temp != NULL) {
-	 *	if (strcmp(command, temp->element ) == 0) {
-	 *		return temp->element;
-	 *	}
-	 *	temp = temp->next;
-	 * }
-	*/
 return NULL;
+
 /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
-} /* which() */
-
+} /* which */
 char *where(char *command, struct pathelement *pathlist )
 {
 
-  /* similarly loop through finding all locations of command */
+  /* siilarly loop through finding all locations of command */
 } /* where() */
 
 void list ( char *dir )
