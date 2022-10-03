@@ -80,24 +80,18 @@ int sh( int argc, char **argv, char **envp )
 } /* sh() */
 
 char *which(char *command, struct pathelement *pathlist )
-{
-	/*
+{ 
 	struct pathelement *temp = pathlist;
-	char *cmd;
-	while (temp != NULL) {
-		sprintf(cmd, "%s/gcc", temp->element);
-		if (access(cmd, F_OK) == 0)
-			return cmd;
+	char *cmd_path;
+	while (temp) {
+		snprintf(cmd_path, BUFFERSIZE, "%s/%s", temp->element, command);
+		if (access(cmd_path, X_OK) == 0) {
+			return cmd_path;
+		}
 		temp = temp->next;
 	}
-	/* while (temp != NULL) {
-	 *	if (strcmp(command, temp->element ) == 0) {
-	 *		return temp->element;
-	 *	}
-	 *	temp = temp->next;
-	 * }
-	*/
 return NULL;
+
 /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
 } /* which */
