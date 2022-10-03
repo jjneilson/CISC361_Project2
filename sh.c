@@ -104,8 +104,17 @@ return NULL;
    NULL when not found. */
 } /* which */
 char *where(char *command, struct pathelement *pathlist )
-{
-
+{ //returned string starts with a : and seperates each path with a :
+	struct pathelement *temp = pathlist;
+	char *cmd_path;
+	char *all_cmd_paths;
+	while (temp) {
+		snprintf(cmd_path, BUFFERSIZE, "%s/%s", temp->element, command);
+		if (access(cmd_path, X_OK) == 0)
+			snprintf(all_cmd_paths, BUFFERSIZE, "%s:%s", all_cmd_paths, cmd_path);
+		temp = temp->next;
+	}
+return all_cmd_paths;
   /* siilarly loop through finding all locations of command */
 } /* where() */
 
