@@ -61,9 +61,18 @@ int sh( int argc, char **argv, char **envp )
         	fprintf(stderr, "%s: Command not found.\n", ans);
 		}
 		else{
-		/* find it */
-		char* exec_path = which(ans,pathlist);
-        /* do fork(), execve() and waitpid() */
+			/* find it */
+			char* exec_path = which(ans,pathlist);
+        	/* do fork(), execve() and waitpid() */
+			pid_t pid;
+			if((pid = fork()) < 0){
+				printf("ERROR\n");
+			else if(pid == 0){
+				execve(ans);
+			}
+			else{
+				waitpid(pid,NULL,0);
+			}
 		}
 	}
   }
