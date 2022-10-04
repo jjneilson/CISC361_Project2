@@ -112,7 +112,19 @@ return all_cmd_paths;
 
 void list ( char *dir )
 {
-  /* see man page for opendir() and readdir() and print out filenames for
+  DIR *dir2;
+  struct dirent *dirstruct;
+
+  dir2 = opendir(dir);
+  if (dir2 == NULL) {
+	printf("Unable to read directory\n");
+  } else {
+	while (dirstruct = readdir(dir2)) {
+		printf("%s\n", dirstruct->d_name);
+	}
+	closedir(dir2);
+  }
+	/* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
 } /* list() */
 
