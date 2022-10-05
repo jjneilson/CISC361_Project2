@@ -56,11 +56,10 @@ int sh( int argc, char **argv, char **envp )
 		go = 0;
 	}
     /*  else  program to exec */
-	else{
-		if(which(ans,pathlist) == NULL){
-        	fprintf(stderr, "%s: Command not found.\n", ans);
-		}
-		else{
+	else {
+		if(which(ans,pathlist) == NULL) {
+        		fprintf(stderr, "%s: Command not found.\n", ans);
+		} else {
 			/* find it */
 			char* exec_path = which(ans,pathlist);
         	/* do fork(), execve() and waitpid() */
@@ -119,11 +118,12 @@ void list ( char *dir )
   if (dir2 == NULL) {
 	printf("Unable to read directory\n");
   } else {
+	printf("%s\n", dir);
 	while (dirstruct = readdir(dir2)) {
 		printf("%s\n", dirstruct->d_name);
 	}
-	closedir(dir2);
   }
+  closedir(dir2);
 	/* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
 } /* list() */
