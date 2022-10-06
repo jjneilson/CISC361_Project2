@@ -23,6 +23,7 @@ int sh( int argc, char **argv, char **envp )
   struct passwd *password_entry;
   char *homedir;
   struct pathelement *pathlist;
+  char *prefix;
 
   uid = getuid();
   password_entry = getpwuid(uid);               /* get passwd info */
@@ -40,12 +41,13 @@ int sh( int argc, char **argv, char **envp )
   /* Put PATH into a linked list */
   pathlist = get_path();
   
+  prefix = "";
   while ( go )
   {
     char ans[BUFFERSIZE];
     int len;
     /* print your prompt */
-    printf("[%s]> ", pwd);
+    printf("%s[%s]> ", prefix, pwd);
     /* get command line and process */
     if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    len = (int) strlen(ans);
@@ -128,3 +130,12 @@ void list ( char *dir )
   the directory passed */
 } /* list() */
 
+char *prompt(char *prefix, char *arg) {
+	if (arg == "" || arg == NULL) { //if no arguement is given 
+		printf("input prompt prefix\n");
+		scanf("%s ", prefix);
+	} else { //is arguement is given
+		strcpy(prefix, arg + ' ');
+	}
+	return prefix;
+}
