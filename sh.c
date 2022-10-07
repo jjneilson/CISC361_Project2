@@ -57,32 +57,28 @@ int sh( int argc, char **argv, char **envp )
 	char *split = strtok(ans,s);
 	char *split2 = strtok(NULL,s);
     /* check for each built in command and implement */
-	if (strcmp(split, "exit") == 0) { //exits	go = 0;
-	}
-	else if (strcmp(split, "which") == 0){
-		char* which_return = which(split2, pathlist);
-		printf("%s\n",which_return);
-	}
-    /*  else  program to exec */
-	else{
-		if(which(split,pathlist) == NULL){
-        	fprintf(stderr, "%s: Command not found.\n", ans);
-		} else {
-			/* find it */
-			char* exec_path = which(ans,pathlist);
-        	/* do fork(), execve() and waitpid() */
-			pid_t pid;
-			if((pid = fork()) < 0){
-				printf("ERROR\n");
+	switch(split) {
+		case "exit":
+			go = 0;
+		case "which":
+			char* which_return = which(split2, pathlist);
+			printf("%s\n",which_return);
+		default:
+			if(which(split,pathlist)==NULL){
+				fprintf(stderr, "%s: Command not found.\n", ans);
+			} else {
+				/* find it */
+				char* exec_path = which(split, pathlist);
+				/* do fork(), exec() and waitpid() */
+				pit_t pid;
+				if((pid=fork())<0){
+					printf("ERROR\n");
+				}
+				else if(pid == 0){}
+				else{
+					waitpid(pid,NULL,0);
+				}
 			}
-			else if(pid == 0){
-				
-			}
-			else{
-				waitpid(pid,NULL,0);
-			}
-		}
-	}
   }
   return 0;
 } /* sh() */
@@ -115,7 +111,7 @@ char *where(char *command, struct pathelement *pathlist )
 		temp = temp->next;
 	}
 return all_cmd_paths;
-  /* siilarly loop through finding all locations of command */
+  /* similarly loop through finding all locations of command */
 } /* where() */
 
 void list ( char *dir )
