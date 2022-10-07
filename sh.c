@@ -184,3 +184,16 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 	free(argenv);
 }
 */
+
+void setenv(char *arg1, char *arg2) { //have to deal with no args in main loop
+	if (arg1 == "PATH") { //special case for PATH
+		setenv();
+	} else if (arg1 == "HOME") { //special case for HOME
+		setenv();
+	}
+	if (arg2 == NULL || arg2 == "") {
+		setenv(arg1);
+	} else {
+
+	}
+}
