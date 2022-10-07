@@ -65,6 +65,9 @@ int sh( int argc, char **argv, char **envp )
 			char* which_return = which(split2,pathlist);
 			printf("%s\n",which_return);
 		}
+		else if (strcmp(split,"where")==0){
+			where(split2,pathlist);
+		}
 		else{
 			if(which(split,pathlist)==NULL){
 			fprintf(stderr, "%s: Command not found.\n", ans);
@@ -91,7 +94,7 @@ char *which(char *command, struct pathelement *pathlist )
 	struct pathelement *temp = pathlist;
 	char *cmd_path;
 	while (temp) {
-		snprintf(cmd_path, BUFFERSIZE, "%s/%s", temp->element, command);
+		snprintf(cmd_path,BUFFERSIZE,"%s/%s",temp->element,command);
 		if (access(cmd_path, X_OK) == 0) {
 			return cmd_path;
 		}
@@ -102,18 +105,16 @@ return NULL;
 /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
 } /* which */
-char *where(char *command, struct pathelement *pathlist )
+void where(char *command, struct pathelement *pathlist )
 { //returned string starts with a : and seperates each path with a :
 	struct pathelement *temp = pathlist;
 	char *cmd_path;
-	char *all_cmd_paths;
 	while (temp) {
 		snprintf(cmd_path, BUFFERSIZE, "%s/%s", temp->element, command);
 		if (access(cmd_path, X_OK) == 0)
-			snprintf(all_cmd_paths, BUFFERSIZE, "%s:%s", all_cmd_paths, cmd_path);
+			printf("%s\n", cmd_path);
 		temp = temp->next;
 	}
-return all_cmd_paths;
   /* similarly loop through finding all locations of command */
 } /* where() */
 
