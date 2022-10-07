@@ -23,7 +23,7 @@ int sh( int argc, char **argv, char **envp )
   	struct passwd *password_entry;
   	char *homedir;
   	struct pathelement *pathlist;
-  	char *prefix;
+  	char *prefix="";
 
   	uid = getuid();
   	password_entry = getpwuid(uid);               /* get passwd info */
@@ -40,14 +40,13 @@ int sh( int argc, char **argv, char **envp )
 	
   	/* Put PATH into a linked list */
   	pathlist = get_path();
-  	
-  	prefix = "";
+
   	while ( go )
   	{
   		char ans[BUFFERSIZE];
     	int len;
     	/* print your prompt */
-    	printf("%s[%s]> ", prefix, pwd);
+    	printf("%s [%s]> ", prefix, pwd);
     	/* get command line and process */
    		if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    	len = (int) strlen(ans);
@@ -70,6 +69,19 @@ int sh( int argc, char **argv, char **envp )
 		}
 		else if (strcmp(split,"ls")==0){
 				list(pwd);
+		}
+		else if (strcmp(split,"prompt")==0){
+			char new_prefix[BUFFERSIZE];
+			if(split2==NULL||split2==""){
+				printf("Enter a new prompt");
+				if (fgets(new_prefix, BUFFERSIZE, stdin) != NULL) {
+             		len = (int) strlen(new_prefix);
+             		new_prefix[len - 1] = '\0';
+					prefix = new_prefix;
+				}
+			} else {
+				prefix=split2;
+			}
 		}
 		else{
 			if(which(split,pathlist)==NULL){
@@ -139,16 +151,6 @@ void list ( char *dir )
 	/* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
 } /* list() */
-
-char *prompt(char *prefix, char *arg) {
-	if (arg == "" || arg == NULL) { //if no arguement is given 
-		printf("input prompt prefix\n");
-		scanf("%s ", prefix);
-	} else { //is arguement is given
-		strcpy(prefix, arg + ' ');
-	}
-	return prefix;
-}
 
 char *getEnvValue(char *envvar) {
 	char value[BUFFERSIZE];
