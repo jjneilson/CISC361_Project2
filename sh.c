@@ -23,6 +23,7 @@ int sh( int argc, char **argv, char **envp )
   struct passwd *password_entry;
   char *homedir;
   struct pathelement *pathlist;
+  char *prefix;
 
   uid = getuid();
   password_entry = getpwuid(uid);               /* get passwd info */
@@ -40,12 +41,13 @@ int sh( int argc, char **argv, char **envp )
   /* Put PATH into a linked list */
   pathlist = get_path();
   
+  prefix = "";
   while ( go )
   {
     char ans[BUFFERSIZE];
     int len;
     /* print your prompt */
-    printf("[%s]> ", pwd);
+    printf("%s[%s]> ", prefix, pwd);
     /* get command line and process */
     if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    len = (int) strlen(ans);
@@ -55,19 +57,18 @@ int sh( int argc, char **argv, char **envp )
 	char *split = strtok(ans,s);
 	char *split2 = strtok(NULL,s);
     /* check for each built in command and implement */
-	if (strcmp(split, "exit") == 0) { //exits
-		go = 0;
+	if (strcmp(split, "exit") == 0) { //exits	go = 0;
 	}
 	else if (strcmp(split, "which") == 0){
 		char* which_return = which(split2, pathlist);
 		printf("%s\n",which_return);
 	}
     /*  else  program to exec */
+<<<<<<< HEAD
 	else{
 		if(which(split,pathlist) == NULL){
-        	fprintf(stderr, "%s: Command not found.\n", split);
-		}
-		else{
+        	fprintf(stderr, "%s: Command not found.\n", ans);
+		} else {
 			/* find it */
 			char* exec_path = which(ans,pathlist);
         	/* do fork(), execve() and waitpid() */
@@ -120,7 +121,29 @@ return all_cmd_paths;
 
 void list ( char *dir )
 {
-  /* see man page for opendir() and readdir() and print out filenames for
+  DIR *dir2;
+  struct dirent *dirstruct;
+
+  dir2 = opendir(dir);
+  if (dir2 == NULL) {
+	printf("Unable to read directory\n");
+  } else {
+	printf("%s\n", dir);
+	while (dirstruct = readdir(dir2)) {
+		printf("%s\n", dirstruct->d_name);
+	}
+  }
+  closedir(dir2);
+	/* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
 } /* list() */
 
+char *prompt(char *prefix, char *arg) {
+	if (arg == "" || arg == NULL) { //if no arguement is given 
+		printf("input prompt prefix\n");
+		scanf("%s ", prefix);
+	} else { //is arguement is given
+		strcpy(prefix, arg + ' ');
+	}
+	return prefix;
+}
