@@ -157,7 +157,10 @@ char *getEnvValue(char *envvar) {
 		printf("BUFFERSIZE to small");
 		return NULL;
 	}
-	return value;
+	char *valuep;
+	valuep = (char*) malloc(strlen(value) * sizeof(char));
+	strcpy(valuep, value);
+	return valuep;
 }
 /*
  * Code for printenv command case
@@ -167,6 +170,7 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 		printf("%s=", env);
 		char *envvalue = getEnvValue(env);
 		printf("%s", envvalue);
+		free(envvalue);
 	}
 } else { //when your given an environment variable 
 	char *argenv = getEnvValue(split2);
@@ -174,5 +178,6 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 		printf("%s", split2);
 		printf("%s", argenv);
 	}
+	free(argenv);
 }
 */
