@@ -142,3 +142,24 @@ char *prompt(char *prefix, char *arg) {
 	}
 	return prefix;
 }
+
+char *getEnvValue(char *envvar) {
+	char value[BUFFERSIZE];
+	if (!getenv(envvar)) {
+		printf("environment not found");
+		return NULL;
+	}
+	if (snprintf(value, BUFFERSIZE, "%s", getenv(envvar)) >= BUFFERSIZE) {
+		printf("BUFFERSIZE to small");
+		return NULL;
+	}
+	return value;
+}
+/*
+for (char **envvar = envp; *envvar != 0; envvar++) {
+	char *env = *envvar;
+	printf("%s=", env);
+	char *envvalue = getEnvValue(env);
+	printf("%s", envvalue);
+}
+*/
