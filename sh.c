@@ -14,72 +14,75 @@
 #define BUFFERSIZE 128
 
 int sh( int argc, char **argv, char **envp )
-{
-  char *prompt = calloc(PROMPTMAX, sizeof(char));
-  char *commandline = calloc(MAX_CANON, sizeof(char));
-  char *command, *arg, *commandpath, *p, *pwd, *owd;
-  char **args = calloc(MAXARGS, sizeof(char*));
-  int uid, i, status, argsct, go = 1;
-  struct passwd *password_entry;
-  char *homedir;
-  struct pathelement *pathlist;
-  char *prefix;
+{	
+  	char *prompt = calloc(PROMPTMAX, sizeof(char));
+  	char *commandline = calloc(MAX_CANON, sizeof(char));
+  	char *command, *arg, *commandpath, *p, *pwd, *owd;
+  	char **args = calloc(MAXARGS, sizeof(char*));
+  	int uid, i, status, argsct, go = 1;
+  	struct passwd *password_entry;
+  	char *homedir;
+  	struct pathelement *pathlist;
+  	char *prefix;
 
-  uid = getuid();
-  password_entry = getpwuid(uid);               /* get passwd info */
-  homedir = password_entry->pw_dir;		/* Home directory to start out with*/
+  	uid = getuid();
+  	password_entry = getpwuid(uid);               /* get passwd info */
+  	homedir = password_entry->pw_dir;		/* Home directory to start out with*/
      
-  if ( (pwd = getcwd(NULL, PATH_MAX+1)) == NULL )
-  {
-    perror("getcwd");
-    exit(2);
-  }
-  owd = calloc(strlen(pwd) + 1, sizeof(char));
-  memcpy(owd, pwd, strlen(pwd));
-  prompt[0] = ' '; prompt[1] = '\0';
-
-  /* Put PATH into a linked list */
-  pathlist = get_path();
-  
-  prefix = "";
-  while ( go )
-  {
-    char ans[BUFFERSIZE];
-    int len;
-    /* print your prompt */
-    printf("%s[%s]> ", prefix, pwd);
-    /* get command line and process */
-    if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
-	    len = (int) strlen(ans);
-	    ans[len - 1] = '\0';
-    }
-	char s[2] = " ";
-	char *split = strtok(ans,s);
-	char *split2 = strtok(NULL,s);
-    /* check for each built in command and implement */
-	switch(split) {
-		case "exit":
+  	if ( (pwd = getcwd(NULL, PATH_MAX+1)) == NULL )
+  	{
+  	  	perror("getcwd");
+  	  	exit(2);
+  	}
+  	owd = calloc(strlen(pwd) + 1, sizeof(char));
+  	memcpy(owd, pwd, strlen(pwd));
+	prompt[0] = ' '; prompt[1] = '\0';
+	
+  	/* Put PATH into a linked list */
+  	pathlist = get_path();
+  	
+  	prefix = "";
+  	while ( go )
+  	{
+  		char ans[BUFFERSIZE];
+    	int len;
+    	/* print your prompt */
+    	printf("%s[%s]> ", prefix, pwd);
+    	/* get command line and process */
+   		if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
+	    	len = (int) strlen(ans);
+	    	ans[len - 1] = '\0';
+    	}
+		char s[2] = " ";
+		char *split = strtok(ans,s);
+		char *split2 = strtok(NULL,s);
+    	/* check for each built in command and implement */
+		/* creating ints for case switch */
+		if(strcmp(split,"exit")==0){
 			go = 0;
-		case "which":
-			char* which_return = which(split2, pathlist);
+		}
+		else if (strcmp(split,"which")==0){
+			char* which_return = which(split2,pathlist);
 			printf("%s\n",which_return);
-		default:
+		}
+		else{
 			if(which(split,pathlist)==NULL){
-				fprintf(stderr, "%s: Command not found.\n", ans);
-			} else {
-				/* find it */
-				char* exec_path = which(split, pathlist);
-				/* do fork(), exec() and waitpid() */
-				pit_t pid;
-				if((pid=fork())<0){
-					printf("ERROR\n");
-				}
-				else if(pid == 0){}
-				else{
-					waitpid(pid,NULL,0);
-				}
-			}
-  }
+			fprintf(stderr, "%s: Command not found.\n", ans);
+        	} else {
+        		/* find it */
+            	char* exec_path = which(split, pathlist);
+            	/* do fork(), exec() and waitpid() */
+            	pid_t pid;
+            	if((pid=fork())<0){
+            		printf("ERROR\n");
+            	}
+           		else if(pid == 0){}
+            	else{
+            		waitpid(pid,NULL,0);
+            	}
+      		}
+		}
+	}
   return 0;
 } /* sh() */
 
