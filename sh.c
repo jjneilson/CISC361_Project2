@@ -68,6 +68,9 @@ int sh( int argc, char **argv, char **envp )
 		else if (strcmp(split,"where")==0){
 			where(split2,pathlist);
 		}
+		else if (strcmp(split,"ls")==0){
+				list(pwd);
+		}
 		else{
 			if(which(split,pathlist)==NULL){
 			fprintf(stderr, "%s: Command not found.\n", ans);
