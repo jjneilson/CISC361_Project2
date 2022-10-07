@@ -159,10 +159,19 @@ char *getEnvValue(char *envvar) {
 	return value;
 }
 /*
-for (char **envvar = envp; *envvar != 0; envvar++) {
-	char *env = *envvar;
-	printf("%s=", env);
-	char *envvalue = getEnvValue(env);
-	printf("%s", envvalue);
+ * Code for printenv command case
+if (split2 == "" || split2 == NULL) { //when your not given an environment variable 
+	for (char **envvar = envp; *envvar != 0; envvar++) {
+		char *env = *envvar;
+		printf("%s=", env);
+		char *envvalue = getEnvValue(env);
+		printf("%s", envvalue);
+	}
+} else { //when your given an environment variable 
+	char *argenv = getEnvValue(split2);
+	if (argenv != NULL) {
+		printf("%s", split2);
+		printf("%s", argenv);
+	}
 }
 */
