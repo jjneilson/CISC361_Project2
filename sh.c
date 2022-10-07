@@ -64,7 +64,6 @@ int sh( int argc, char **argv, char **envp )
 		printf("%s\n",which_return);
 	}
     /*  else  program to exec */
-<<<<<<< HEAD
 	else{
 		if(which(split,pathlist) == NULL){
         	fprintf(stderr, "%s: Command not found.\n", ans);
