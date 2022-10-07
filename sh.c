@@ -159,3 +159,11 @@ char *getEnvValue(char *envvar) {
 	}
 	return value;
 }
+/*
+for (char **envvar = envp; *envvar != 0; envvar++) {
+	char *env = *envvar;
+	printf("%s=", env);
+	char *envvalue = getEnvValue(env);
+	printf("%s", envvalue);
+}
+*/
