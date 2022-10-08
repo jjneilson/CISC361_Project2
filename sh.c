@@ -108,7 +108,6 @@ int sh( int argc, char **argv, char **envp )
                                 	free(envvalue);                              
 			} else { //with one or more args
 			}
->>>>>>> 6d275b5e13b9a0512c3c482ec3bfd6e82433699d
 		} else if (strcmp(command,"prompt")==0) {
 			char new_prefix[BUFFERSIZE];
 			if(args[0]==NULL||args[0]==""){
@@ -228,9 +227,9 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 }                                                                                              
 */
 void setenv(char *arg1, char *arg2, char *home) { //have to deal with no args in main loop
-	if (arg2 == NULL || arg2 == "") {
+	if (arg2 == NULL || arg2 == "") { //given one arg
 		setenv(arg1, NULL, 1);
-	} else {
+	} else { //given two args
 		setenv(arg1, arg2, 1);
 	}
 }
