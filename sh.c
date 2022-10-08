@@ -70,7 +70,25 @@ int sh( int argc, char **argv, char **envp )
 		}
 		else if (strcmp(split,"ls")==0){
 				list(pwd);
-		}
+		} else if (strcmp(split,"printenv")==0) {
+			if (split2 == "" || split2 == NULL) { //when your not given an environment variable 
+				for (char **envvar = envp; *envvar != 0; envvar++) {
+					char *env = *envvar;
+					printf("%s=", env);
+					char *envvalue = getEnvValue(env);
+					printf("%s", envvalue);
+					free(envvalue);
+				}
+			} else { //when your given an environment variable 
+				char *argenv = getEnvValue(split2);
+				if (argenv != NULL) {
+				printf("%s", split2);
+				printf("%s", argenv);
+				}
+			free(argenv);
+			}                                			
+		} else if (strcmp(split, "setenv")==0) {
+		} 
 		else{
 			if(which(split,pathlist)==NULL){
 			fprintf(stderr, "%s: Command not found.\n", ans);
@@ -182,5 +200,13 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 		printf("%s", argenv);
 	}
 	free(argenv);
-}
+}                                                                                              
 */
+
+void setenv(char *arg1, char *arg2, char *home) { //have to deal with no args in main loop
+	if (arg2 == NULL || arg2 == "") {
+		setenv(arg1, NULL, 1);
+	} else {
+		setenv(arg1, arg2, 1);
+	}
+}
