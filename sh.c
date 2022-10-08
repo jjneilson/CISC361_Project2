@@ -74,7 +74,13 @@ int sh( int argc, char **argv, char **envp )
 			where(args[0],pathlist);
 		}
 		else if (strcmp(command,"ls")==0){
+			if (args[0] == NULL || args[0] == "") { //no args
 				list(pwd);
+			} else { //one or more args
+				for (int i = 0, args[i] != NULL, i++) {
+					list(args[i]);
+				}
+			}
 		} else if (strcmp(command,"printenv")==0) {
 			if (args[0] == "" || args[0] == NULL) { //when your not given an environment variable 
 				for (char **envvar = envp; *envvar != 0; envvar++) {
@@ -82,7 +88,7 @@ int sh( int argc, char **argv, char **envp )
 					printf("%s=", env);
 					char *envvalue = getEnvValue(env);
 					printf("%s", envvalue);
-					free(envvalue);
+					free(envvalue);                                    
 				}
 			} else { //when your given an environment variable 
 				char *argenv = getEnvValue(args[0]);
@@ -93,6 +99,16 @@ int sh( int argc, char **argv, char **envp )
 			free(argenv);
 			}                                			
 		} else if (strcmp(command, "setenv")==0) {
+			if (args[0] == NULL || args[0] == "") { //no args
+				for (char **envvar = envp; *envvar != 0; envvar++) {
+                                	char *env = *envvar;
+                                	printf("%s=", env);
+                                	char *envvalue = getEnvValue(env);
+                                	printf("%s", envvalue);
+                                	free(envvalue);                              
+			} else { //with one or more args
+			}
+>>>>>>> 6d275b5e13b9a0512c3c482ec3bfd6e82433699d
 		} else if (strcmp(command,"prompt")==0) {
 			char new_prefix[BUFFERSIZE];
 			if(args[0]==NULL||args[0]==""){
