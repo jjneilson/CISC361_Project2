@@ -55,9 +55,9 @@ int sh( int argc, char **argv, char **envp )
 		char s[2] = " "; //delimiter for strtok
 		command = strtok(ans,s);
 		arg = strtok(NULL,s);
-		int argsct=0;
+		args[0]=arg;
 		while (arg!=NULL && i<10){
-			args[i]=arg;
+			args[argsct]=arg;
 			arg=strtok(NULL,s);
 			argsct+=1;
 		}
@@ -106,13 +106,13 @@ int sh( int argc, char **argv, char **envp )
                                 	char *envvalue = getEnvValue(env);
                                 	printf("%s", envvalue);
                                 	free(envvalue);                              
+				}
 			} else { //with one or more args
 			}
->>>>>>> 6d275b5e13b9a0512c3c482ec3bfd6e82433699d
 		} else if (strcmp(command,"prompt")==0) {
 			char new_prefix[BUFFERSIZE];
 			if(args[0]==NULL||args[0]==""){
-				printf("Enter a new prompt");
+				printf("Enter a new prompt: ");
 				if (fgets(new_prefix, BUFFERSIZE, stdin) != NULL) {
              		len = (int) strlen(new_prefix);
              		new_prefix[len - 1] = '\0';
@@ -227,7 +227,7 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 	free(argenv);
 }                                                                                              
 */
-void setenv(char *arg1, char *arg2, char *home) { //have to deal with no args in main loop
+void oursetenv(char *arg1, char *arg2, char *home) { //have to deal with no args in main loop
 	if (arg2 == NULL || arg2 == "") {
 		setenv(arg1, NULL, 1);
 	} else {
