@@ -108,6 +108,7 @@ int sh( int argc, char **argv, char **envp )
                                 	free(envvalue);                              
 			} else { //with one or more args
 			}
+>>>>>>> 6d275b5e13b9a0512c3c482ec3bfd6e82433699d
 		} else if (strcmp(command,"prompt")==0) {
 			char new_prefix[BUFFERSIZE];
 			if(args[0]==NULL||args[0]==""){
