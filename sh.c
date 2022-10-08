@@ -87,32 +87,32 @@ int sh( int argc, char **argv, char **envp )
 			}
 		} else if (strcmp(args[0],"printenv")==0) {
 			if (args[2] != NULL) {
-				fprintf(stderr, "too many arguements for given command");
+				fprintf(stderr, "too many arguements for given command\n");
 			} else if (args[1] == NULL) { //when your not given an environment variable 
 				for (char **envvar = envp; *envvar != 0; envvar++) {
 					char *env = *envvar;
 					printf("%s=", env);
 					char *envvalue = getEnvValue(env);
-					printf("%s", envvalue);
+					printf("%s\n", envvalue);
 					free(envvalue);                                    
 				}
 			} else { //when your given an environment variable 
 				char *argenv = getEnvValue(args[1]);
 				if (argenv != NULL) {
-				printf("%s", args[1]);
-				printf("%s", argenv);
+				printf("%s=", args[1]);
+				printf("%s\n", argenv);
 				}
 			free(argenv);
 			}                                			
 		} else if (strcmp(args[0], "setenv")==0) {
 			if (args[3] != NULL) {
-				fprintf(stderr, "too many arguements for given command");
+				fprintf(stderr, "too many arguements for given command\n");
 			} else if (args[1] == NULL) { //no args
 				for (char **envvar = envp; *envvar != 0; envvar++) {
                                 	char *env = *envvar;
                                 	printf("%s=", env);
                                 	char *envvalue = getEnvValue(env);
-                                	printf("%s", envvalue);
+                                	printf("%s\n", envvalue);
                                 	free(envvalue);                              
 				}
 			} else { //with one or more args
@@ -147,9 +147,9 @@ int sh( int argc, char **argv, char **envp )
 				prefix=args[1];
 			}
 		} else if (strcmp(args[0], "pwd")==0) {
-			printf("%s", pwd);
+			printf("%s\n", pwd);
 		} else if (strcmp(args[0], "pid")==0) {
-			printf("%d", pid);
+			printf("%d\n", pid);
 		} else if (strcmp(args[0], "cd")==0) {
 			if (args[1] == NULL) {
 				chdir(homedir);
@@ -157,7 +157,15 @@ int sh( int argc, char **argv, char **envp )
 				ourcd(args[1]);
 			}
 		} else if (strcmp(args[0], "kill")==0) {
-
+			if (args[1] != NULL) {
+				if (args[2] == NULL) {
+					pid_t pid1 = atoi(args[1]); //do we need to add a '-' to the pid or int?
+					kill(pid1, SIGTERM);
+				} else {
+					pid_t pid2 = atoi(args[1]);
+					kill(pid2, atoi(args[1]));
+				}
+			}
 		} else {
 			if(which(args[0] ,pathlist)==NULL){
 				fprintf(stderr, "%s: Command not found.\n", ans);
@@ -231,11 +239,11 @@ void list ( char *dir )
 char *getEnvValue(char *envvar) {
 	char value[BUFFERSIZE];
 	if (!getenv(envvar)) {
-		printf("environment not found");
+		printf("environment not found\n");
 		return NULL;
 	}
 	if (snprintf(value, BUFFERSIZE, "%s", getenv(envvar)) >= BUFFERSIZE) {
-		printf("BUFFERSIZE to small");
+		printf("BUFFERSIZE to small\n");
 		return NULL;
 	}
 	char *valuep;
@@ -256,7 +264,7 @@ void ourcd(char *pathdir) {
 		chdir("..");
 	} else {
 		if (chdir(pathdir) != 0) {
-			printf("error, no such directory");
+			printf("error, no such directory\n");
 		}
 	}
 }
