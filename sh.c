@@ -52,27 +52,33 @@ int sh( int argc, char **argv, char **envp )
 	    	len = (int) strlen(ans);
 	    	ans[len - 1] = '\0';
     	}
-		char s[2] = " ";
-		char *split = strtok(ans,s);
-		char *split2 = strtok(NULL,s);
+		char s[2] = " "; //delimiter for strtok
+		command = strtok(ans,s);
+		arg = strtok(NULL,s);
+		int argsct=0;
+		while (arg!=NULL && i<10){
+			args[i]=arg;
+			arg=strtok(NULL,s);
+			argsct+=1;
+		}
     	/* check for each built in command and implement */
 		/* creating ints for case switch */
-		if(strcmp(split,"exit")==0){
+		if(strcmp(command,"exit")==0){
 			go = 0;
 		}
-		else if (strcmp(split,"which")==0){
-			char* which_return = which(split2,pathlist);
+		else if (strcmp(command,"which")==0){
+			char* which_return = which(args[0],pathlist);
 			printf("%s\n",which_return);
 		}
-		else if (strcmp(split,"where")==0){
-			where(split2,pathlist);
+		else if (strcmp(command,"where")==0){
+			where(args[0],pathlist);
 		}
-		else if (strcmp(split,"ls")==0){
+		else if (strcmp(command,"ls")==0){
 				list(pwd);
 		}
-		else if (strcmp(split,"prompt")==0){
+		else if (strcmp(command,"prompt")==0){
 			char new_prefix[BUFFERSIZE];
-			if(split2==NULL||split2==""){
+			if(args[0]==NULL||args[0]==""){
 				printf("Enter a new prompt");
 				if (fgets(new_prefix, BUFFERSIZE, stdin) != NULL) {
              		len = (int) strlen(new_prefix);
@@ -80,21 +86,23 @@ int sh( int argc, char **argv, char **envp )
 					prefix = new_prefix;
 				}
 			} else {
-				prefix=split2;
+				prefix=args[0];
 			}
 		}
 		else{
-			if(which(split,pathlist)==NULL){
+			if(which(command,pathlist)==NULL){
 			fprintf(stderr, "%s: Command not found.\n", ans);
         	} else {
         		/* find it */
-            	char* exec_path = which(split, pathlist);
+            	char* exec_path = which(command, pathlist);
             	/* do fork(), exec() and waitpid() */
             	pid_t pid;
             	if((pid=fork())<0){
             		printf("ERROR\n");
             	}
-           		else if(pid == 0){}
+           		else if(pid == 0){
+					execve(exec_path, args, envp);
+				}
             	else{
             		waitpid(pid,NULL,0);
             	}
