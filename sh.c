@@ -108,6 +108,15 @@ int sh( int argc, char **argv, char **envp )
                                 	free(envvalue);                              
 				}
 			} else { //with one or more args
+				if (args[0] == "HOME") {
+					oursetenv(args[0], args[1]);
+					strcpy(homedir, args[1]); //changing home directory
+				} else if (args[0] == "PATH") {
+					oursetenv(args[0], args[1]);
+
+				} else {
+					oursetenv(args[0], args[1]);
+				}	
 			}
 		} else if (strcmp(command,"prompt")==0) {
 			char new_prefix[BUFFERSIZE];
@@ -228,7 +237,7 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 }                                                                                              
 */
 
-void oursetenv(char *arg1, char *arg2, char *home) { //have to deal with no args in main loop
+void oursetenv(char *arg1, char *arg2) { //have to deal with no args in main loop
 	if (arg2 == NULL || arg2 == "") {
 		char *empty = "";
 		setenv(arg1, empty, 1);
