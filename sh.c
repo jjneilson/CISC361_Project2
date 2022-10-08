@@ -107,14 +107,22 @@ int sh( int argc, char **argv, char **envp )
                                 	free(envvalue);                              
 				}
 			} else { //with one or more args
-				if (args[0] == "HOME") {
-					oursetenv(args[0], args[1]);
-					strcpy(homedir, args[1]); //changing home directory
-				} else if (args[0] == "PATH") {
-					oursetenv(args[0], args[1]);
-
+				if (args[1] == "HOME") {
+					oursetenv(args[1], args[2]);
+					strcpy(homedir, args[2]); //changing home directory
+				} else if (args[1] == "PATH") {
+					oursetenv(args[1], args[2]);
+					//free pathlist before redeclaring
+					free (pathlist->element);
+					struct pathelement *p = pathlist;
+					while (p) {
+						struct pathelement *tmp = p;
+						p = p->next;
+						free(tmp);
+					}
+					pathlist = get_path();	
 				} else {
-					oursetenv(args[0], args[1]);
+					oursetenv(args[1], args[2]);
 				}	
 			}
 		} else if (strcmp(args[0],"prompt")==0) {
