@@ -43,15 +43,16 @@ int sh( int argc, char **argv, char **envp )
 
   	while ( go )
   	{
-  		char ans[BUFFERSIZE];
-    	int len;
-    	/* print your prompt */
-    	printf("%s [%s]> ", prefix, pwd);
-    	/* get command line and process */
+  		char **args = calloc(MAXARGS, sizeof(char*));		
+		char ans[BUFFERSIZE];
+    		int len;
+    		/* print your prompt */
+    		printf("%s [%s]> ", prefix, pwd);
+    		/* get command line and process */
    		if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    	len = (int) strlen(ans);
 	    	ans[len - 1] = '\0';
-    	}
+    		}
 		char s[2] = " "; //delimiter for strtok
 		arg = strtok(ans,s);
 		argsct=0;
@@ -60,7 +61,7 @@ int sh( int argc, char **argv, char **envp )
 			arg=strtok(NULL,s);
 			argsct+=1;
 		}
-    	/* check for each built in command and implement */
+    		/* check for each built in command and implement */
 		/* creating ints for case switch */
 		if(strcmp(args[0],"exit")==0){
 			go = 0;
@@ -81,7 +82,9 @@ int sh( int argc, char **argv, char **envp )
 				}
 			}
 		} else if (strcmp(args[0],"printenv")==0) {
-			if (args[1] == "" || args[1] == NULL) { //when your not given an environment variable 
+			if (args[2] != "") {
+				fprintf(stderr, "too many arguements for given command");
+			} else if (args[1] == "" || args[1] == NULL) { //when your not given an environment variable 
 				for (char **envvar = envp; *envvar != 0; envvar++) {
 					char *env = *envvar;
 					printf("%s=", env);
@@ -98,7 +101,9 @@ int sh( int argc, char **argv, char **envp )
 			free(argenv);
 			}                                			
 		} else if (strcmp(args[0], "setenv")==0) {
-			if (args[1] == NULL || args[1] == "") { //no args
+			if (args[3] != "") {
+				fprintf(stderr, "too many arguements for given command");
+			} else if (args[1] == NULL || args[1] == "") { //no args
 				for (char **envvar = envp; *envvar != 0; envvar++) {
                                 	char *env = *envvar;
                                 	printf("%s=", env);
@@ -140,23 +145,22 @@ int sh( int argc, char **argv, char **envp )
 		}
 		else{
 			if(which(args[0] ,pathlist)==NULL){
-			fprintf(stderr, "%s: Command not found.\n", ans);
-        	} else {
-        		/* find it */
-            	char * exec_path = which(args[0], pathlist);
-            	/* do fork(), exec() and waitpid() */
-            	pid_t pid;
-            	if((pid=fork())<0){
-            		printf("ERROR\n");
-            	}
-           		else if(pid == 0){
+				fprintf(stderr, "%s: Command not found.\n", ans);
+			} else {
+        			/* find it */
+            			char * exec_path = which(args[0], pathlist);
+            			/* do fork(), exec() and waitpid() */
+            			pid_t pid;
+            			if((pid=fork())<0){
+            				printf("ERROR\n");
+            			} else if(pid == 0) {
 					execve(exec_path, args, NULL);
-				}
-            	else{
-            		waitpid(pid,NULL,0);
-            	}
-      		}
+				} else {
+            				waitpid(pid,NULL,0);
+            			}
+      			}
 		}
+	free(args);
 	}
   return 0;
 } /* sh() */
