@@ -227,10 +227,11 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 	free(argenv);
 }                                                                                              
 */
+
 void oursetenv(char *arg1, char *arg2, char *home) { //have to deal with no args in main loop
 	if (arg2 == NULL || arg2 == "") {
 		setenv(arg1, NULL, 1);
-	} else {
+	} else { //given two args
 		setenv(arg1, arg2, 1);
 	}
 }
