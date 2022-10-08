@@ -23,7 +23,7 @@ int sh( int argc, char **argv, char **envp )
   	struct passwd *password_entry;
   	char *homedir;
   	struct pathelement *pathlist;
-  	char *prefix;
+  	char *prefix="";
 
   	uid = getuid();
   	password_entry = getpwuid(uid);               /* get passwd info */
@@ -40,35 +40,40 @@ int sh( int argc, char **argv, char **envp )
 	
   	/* Put PATH into a linked list */
   	pathlist = get_path();
-  	
-  	prefix = "";
+
   	while ( go )
   	{
   		char ans[BUFFERSIZE];
     	int len;
     	/* print your prompt */
-    	printf("%s[%s]> ", prefix, pwd);
+    	printf("%s [%s]> ", prefix, pwd);
     	/* get command line and process */
    		if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    	len = (int) strlen(ans);
 	    	ans[len - 1] = '\0';
     	}
-		char s[2] = " ";
-		char *split = strtok(ans,s);
-		char *split2 = strtok(NULL,s);
+		char s[2] = " "; //delimiter for strtok
+		command = strtok(ans,s);
+		arg = strtok(NULL,s);
+		int argsct=0;
+		while (arg!=NULL && i<10){
+			args[i]=arg;
+			arg=strtok(NULL,s);
+			argsct+=1;
+		}
     	/* check for each built in command and implement */
 		/* creating ints for case switch */
-		if(strcmp(split,"exit")==0){
+		if(strcmp(command,"exit")==0){
 			go = 0;
 		}
-		else if (strcmp(split,"which")==0){
-			char* which_return = which(split2,pathlist);
+		else if (strcmp(command,"which")==0){
+			char* which_return = which(args[0],pathlist);
 			printf("%s\n",which_return);
 		}
-		else if (strcmp(split,"where")==0){
-			where(split2,pathlist);
+		else if (strcmp(command,"where")==0){
+			where(args[0],pathlist);
 		}
-		else if (strcmp(split,"ls")==0){
+		else if (strcmp(command,"ls")==0){
 				list(pwd);
 		} else if (strcmp(split,"printenv")==0) {
 			if (split2 == "" || split2 == NULL) { //when your not given an environment variable 
@@ -88,19 +93,33 @@ int sh( int argc, char **argv, char **envp )
 			free(argenv);
 			}                                			
 		} else if (strcmp(split, "setenv")==0) {
-		} 
+		} else if (strcmp(command,"prompt")==0) {
+			char new_prefix[BUFFERSIZE];
+			if(args[0]==NULL||args[0]==""){
+				printf("Enter a new prompt");
+				if (fgets(new_prefix, BUFFERSIZE, stdin) != NULL) {
+             		len = (int) strlen(new_prefix);
+             		new_prefix[len - 1] = '\0';
+					prefix = new_prefix;
+				}
+			} else {
+				prefix=args[0];
+			}
+		}
 		else{
-			if(which(split,pathlist)==NULL){
+			if(which(command,pathlist)==NULL){
 			fprintf(stderr, "%s: Command not found.\n", ans);
         	} else {
         		/* find it */
-            	char* exec_path = which(split, pathlist);
+            	char* exec_path = which(command, pathlist);
             	/* do fork(), exec() and waitpid() */
             	pid_t pid;
             	if((pid=fork())<0){
             		printf("ERROR\n");
             	}
-           		else if(pid == 0){}
+           		else if(pid == 0){
+					execve(exec_path, args, envp);
+				}
             	else{
             		waitpid(pid,NULL,0);
             	}
@@ -158,16 +177,6 @@ void list ( char *dir )
   the directory passed */
 } /* list() */
 
-char *prompt(char *prefix, char *arg) {
-	if (arg == "" || arg == NULL) { //if no arguement is given 
-		printf("input prompt prefix\n");
-		scanf("%s ", prefix);
-	} else { //is arguement is given
-		strcpy(prefix, arg + ' ');
-	}
-	return prefix;
-}
-
 char *getEnvValue(char *envvar) {
 	char value[BUFFERSIZE];
 	if (!getenv(envvar)) {
@@ -202,7 +211,6 @@ if (split2 == "" || split2 == NULL) { //when your not given an environment varia
 	free(argenv);
 }                                                                                              
 */
-
 void setenv(char *arg1, char *arg2, char *home) { //have to deal with no args in main loop
 	if (arg2 == NULL || arg2 == "") {
 		setenv(arg1, NULL, 1);
