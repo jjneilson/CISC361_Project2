@@ -78,7 +78,7 @@ int sh( int argc, char **argv, char **envp )
 			where(args[1],pathlist);
 		}
 		else if (strcmp(args[0],"ls")==0){
-			if (args[1] == NULL || args[1] == "") { //no args
+			if (args[1] == NULL) { //no args
 				list(pwd);
 			} else { //one or more args
 				for (int i = 1; args[i] != NULL; i++) {
@@ -86,9 +86,9 @@ int sh( int argc, char **argv, char **envp )
 				}
 			}
 		} else if (strcmp(args[0],"printenv")==0) {
-			if (args[2] != "") {
+			if (args[2] != NULL) {
 				fprintf(stderr, "too many arguements for given command");
-			} else if (args[1] == "" || args[1] == NULL) { //when your not given an environment variable 
+			} else if (args[1] == NULL) { //when your not given an environment variable 
 				for (char **envvar = envp; *envvar != 0; envvar++) {
 					char *env = *envvar;
 					printf("%s=", env);
@@ -105,9 +105,9 @@ int sh( int argc, char **argv, char **envp )
 			free(argenv);
 			}                                			
 		} else if (strcmp(args[0], "setenv")==0) {
-			if (args[3] != "") {
+			if (args[3] != NULL) {
 				fprintf(stderr, "too many arguements for given command");
-			} else if (args[1] == NULL || args[1] == "") { //no args
+			} else if (args[1] == NULL) { //no args
 				for (char **envvar = envp; *envvar != 0; envvar++) {
                                 	char *env = *envvar;
                                 	printf("%s=", env);
@@ -151,7 +151,11 @@ int sh( int argc, char **argv, char **envp )
 		} else if (strcmp(args[0], "pid")==0) {
 			printf("%d", pid);
 		} else if (strcmp(args[0], "cd")==0) {
-			ourcd(args[1]);
+			if (args[1] == NULL) {
+				chdir(homedir);
+			} else {
+				ourcd(args[1]);
+			}
 		} else if (strcmp(args[0], "kill")==0) {
 
 		} else {
@@ -239,37 +243,20 @@ char *getEnvValue(char *envvar) {
 	strcpy(valuep, value);
 	return valuep;
 }
-/*
- * Code for printenv command case
-if (split2 == "" || split2 == NULL) { //when your not given an environment variable 
-	for (char **envvar = envp; *envvar != 0; envvar++) {
-		char *env = *envvar;
-		printf("%s=", env);
-		char *envvalue = getEnvValue(env);
-		printf("%s", envvalue);
-		free(envvalue);
-	}
-} else { //when your given an environment variable 
-	char *argenv = getEnvValue(split2);
-	if (argenv != NULL) {
-		printf("%s", split2);
-		printf("%s", argenv);
-	}
-	free(argenv);
-}                                                                                              
-*/
-
 void oursetenv(char *arg1, char *arg2) { //have to deal with no args in main loop
-	if (arg2 == NULL || arg2 == "") {
+	if (arg2 == NULL) {
 		char *empty = "";
 		setenv(arg1, empty, 1);
 	} else { //given two args
 		setenv(arg1, arg2, 1);
 	}
 }
-
 void ourcd(char *pathdir) {
-	if (pathdir == NULL || pathdir == "") {
-		chdir(homedir);
+	if (strcmp(pathdir, "-")==0) {
+		chdir("..");
+	} else {
+		if (chdir(pathdir) != 0) {
+			printf("error, no such directory");
+		}
 	}
 }
