@@ -74,25 +74,40 @@ int sh( int argc, char **argv, char **envp )
 			where(args[0],pathlist);
 		}
 		else if (strcmp(command,"ls")==0){
+			if (args[0] == NULL || args[0] == "") { //no args
 				list(pwd);
+			} else { //one or more args
+				for (int i = 0, args[i] != NULL, i++) {
+					list(args[i]);
+				}
+			}
 		} else if (strcmp(split,"printenv")==0) {
-			if (split2 == "" || split2 == NULL) { //when your not given an environment variable 
+			if (args[0] == "" || args[0] == NULL) { //when your not given an environment variable 
 				for (char **envvar = envp; *envvar != 0; envvar++) {
 					char *env = *envvar;
 					printf("%s=", env);
 					char *envvalue = getEnvValue(env);
 					printf("%s", envvalue);
-					free(envvalue);
+					free(envvalue);                                    
 				}
 			} else { //when your given an environment variable 
-				char *argenv = getEnvValue(split2);
+				char *argenv = getEnvValue(args[0]);
 				if (argenv != NULL) {
-				printf("%s", split2);
+				printf("%s", args[0]);
 				printf("%s", argenv);
 				}
 			free(argenv);
 			}                                			
 		} else if (strcmp(split, "setenv")==0) {
+			if (args[0] == NULL || args[0] == "") { //no args
+				for (char **envvar = envp; *envvar != 0; envvar++) {
+                                	char *env = *envvar;
+                                	printf("%s=", env);
+                                	char *envvalue = getEnvValue(env);
+                                	printf("%s", envvalue);
+                                	free(envvalue);                              
+			} else { //with one or more args
+			}
 		} else if (strcmp(command,"prompt")==0) {
 			char new_prefix[BUFFERSIZE];
 			if(args[0]==NULL||args[0]==""){
