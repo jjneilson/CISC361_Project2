@@ -142,8 +142,15 @@ int sh( int argc, char **argv, char **envp )
 			} else {
 				prefix=args[1];
 			}
-		}
-		else{
+		} else if (strcmp(args[0], "pwd")==0) {
+			printf("%s", pwd);
+		} else if (strcmp(args[0], "pid")==0) {
+			printf("%d", pid);
+		} else if (strcmp(args[0], "cd")==0) {
+			ourcd(args[1]);
+		} else if (strcmp(args[0], "kill")==0) {
+
+		} else {
 			if(which(args[0] ,pathlist)==NULL){
 				fprintf(stderr, "%s: Command not found.\n", ans);
 			} else {
@@ -199,7 +206,7 @@ void list ( char *dir )
   DIR *dir2;
   struct dirent *dirstruct;
 
-  dir2 = opendir(dir);
+  dir2 = opendir(dir);	
   if (dir2 == NULL) {
 	printf("Unable to read directory\n");
   } else {
@@ -254,5 +261,11 @@ void oursetenv(char *arg1, char *arg2) { //have to deal with no args in main loo
 		setenv(arg1, empty, 1);
 	} else { //given two args
 		setenv(arg1, arg2, 1);
+	}
+}
+
+void ourcd(char *pathdir) {
+	if (pathdir == NULL || pathdir == "") {
+		chdir(homedir);
 	}
 }
