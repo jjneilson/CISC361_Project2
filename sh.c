@@ -77,11 +77,11 @@ int sh( int argc, char **argv, char **envp )
 			if (args[0] == NULL || args[0] == "") { //no args
 				list(pwd);
 			} else { //one or more args
-				for (int i = 0, args[i] != NULL, i++) {
+				for (int i = 0; args[i] != NULL; i++) {
 					list(args[i]);
 				}
 			}
-		} else if (strcmp(split,"printenv")==0) {
+		} else if (strcmp(command,"printenv")==0) {
 			if (args[0] == "" || args[0] == NULL) { //when your not given an environment variable 
 				for (char **envvar = envp; *envvar != 0; envvar++) {
 					char *env = *envvar;
@@ -98,7 +98,7 @@ int sh( int argc, char **argv, char **envp )
 				}
 			free(argenv);
 			}                                			
-		} else if (strcmp(split, "setenv")==0) {
+		} else if (strcmp(command, "setenv")==0) {
 			if (args[0] == NULL || args[0] == "") { //no args
 				for (char **envvar = envp; *envvar != 0; envvar++) {
                                 	char *env = *envvar;
