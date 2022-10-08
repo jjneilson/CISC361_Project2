@@ -28,8 +28,8 @@ int sh( int argc, char **argv, char **envp )
   	uid = getuid();
   	password_entry = getpwuid(uid);               /* get passwd info */
   	homedir = password_entry->pw_dir;		/* Home directory to start out with*/
-     
-  	if ( (pwd = getcwd(NULL, PATH_MAX+1)) == NULL )
+    
+	if ( (pwd = getcwd(NULL, PATH_MAX+1)) == NULL )
   	{
   	  	perror("getcwd");
   	  	exit(2);
@@ -51,8 +51,12 @@ int sh( int argc, char **argv, char **envp )
     		/* get command line and process */
    		if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    	len = (int) strlen(ans);
-	    	ans[len - 1] = '\0';
-    		}
+	    	if(len==1){
+				continue;
+			} else {
+				ans[len - 1] = '\0';
+			}
+    	}
 		char s[2] = " "; //delimiter for strtok
 		arg = strtok(ans,s);
 		argsct=0;
