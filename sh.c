@@ -211,7 +211,8 @@ int sh( int argc, char **argv, char **envp )
 char *which(char *command, struct pathelement *pathlist )
 { 
 	struct pathelement *temp = pathlist;
-	char *cmd_path;
+	char *cmd_path = temp->element;
+	temp = temp->next;
 	while (temp) {
 		snprintf(cmd_path,BUFFERSIZE,"%s/%s",temp->element,command);
 		if (access(cmd_path, X_OK) == 0) {
@@ -228,7 +229,8 @@ return NULL;
 void where(char *command, struct pathelement *pathlist )
 { //returned string starts with a : and seperates each path with a :
 	struct pathelement *temp = pathlist;
-	char *cmd_path;
+	char *cmd_path = temp->element;
+	temp = temp->next;
 	while (temp) {
 		snprintf(cmd_path, BUFFERSIZE, "%s/%s", temp->element, command);
 		if (access(cmd_path, X_OK) == 0)
