@@ -77,7 +77,7 @@ int sh( int argc, char **argv, char **envp )
 		else if (strcmp(args[0],"where")==0){
 			where(args[1],pathlist);
 		}
-		else if (strcmp(args[0],"ls")==0){
+		else if (strcmp(args[0],"ls")==0 || strcmp(args[0],"list")==0){
 			if (args[1] == NULL) { //no args
 				list(pwd);
 			} else { //one or more args
