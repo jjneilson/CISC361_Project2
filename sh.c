@@ -18,7 +18,7 @@ int sh( int argc, char **argv, char **envp )
   	char *prompt = calloc(PROMPTMAX, sizeof(char));
   	char *commandline = calloc(MAX_CANON, sizeof(char));
   	char *command, *arg, *commandpath, *p, *pwd, *owd;
-  	char **args = calloc(MAXARGS, sizeof(char*));
+  	//char **args = calloc(MAXARGS, sizeof(char*));
   	int uid, i, status, argsct, go = 1;
   	struct passwd *password_entry;
   	char *homedir;
@@ -99,10 +99,10 @@ int sh( int argc, char **argv, char **envp )
 			} else { //when your given an environment variable 
 				char *argenv = getEnvValue(args[1]);
 				if (argenv != NULL) {
-				printf("%s=", args[1]);
-				printf("%s\n", argenv);
+					printf("%s=", args[1]);
+					printf("%s\n", argenv);
 				}
-			free(argenv);
+				free(argenv);
 			}                                			
 		} else if (strcmp(args[0], "setenv")==0) {
 			if (args[3] != NULL) {
@@ -128,7 +128,7 @@ int sh( int argc, char **argv, char **envp )
 						struct pathelement *tmp = p;
 						p = p->next;
 						free(tmp);
-					}
+					}                                     
 					pathlist = get_path();	
 				} else {
 					oursetenv(args[1], args[2]);
@@ -192,7 +192,17 @@ int sh( int argc, char **argv, char **envp )
 		}
 	free(args);
 	}
-  return 0;
+	free (pathlist->element); //freeing path linked list
+	struct pathelement *pe = pathlist;
+	while (pe) {
+		struct pathelement *tmp = pe;
+		pe = pe->next;
+		free(tmp);
+	}
+	free(prompt);
+	free(commandline);
+	free(owd);	
+	return 0;
 } /* sh() */
 
 char *which(char *command, struct pathelement *pathlist )
