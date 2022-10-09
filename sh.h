@@ -43,5 +43,11 @@ void oursetenv(char *arg1, char *arg2);
  */
 void ourcd(char *pathdir);
 
+/* findlist
+ * curdir: the cwd at the time
+ * targetdir: the directory looking to cd into
+ * Returns an int, 1 when such directory exists and 0 when it does not 
+*/
+int findlist(char *curdir, char *targetdir);
 #define PROMPTMAX 32
 #define MAXARGS 10

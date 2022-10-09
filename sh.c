@@ -155,8 +155,13 @@ int sh( int argc, char **argv, char **envp )
 				chdir(homedir);
 				pwd=homedir;
 			} else {
-				ourcd(args[1]);
-				pwd=args[1];
+				if (findlist(pwd, args[1])==1) { //checks if directory exists
+					ourcd(args[1]);
+					pwd= strcat(pwd, "/");
+					pwd= strcat(pwd, args[1]);
+				} else {
+					printf("error, no such directory\n");
+				}
 			}
 		} else if (strcmp(args[0], "kill")==0) {
 			if (args[1] != NULL) {
@@ -237,6 +242,17 @@ void list ( char *dir )
 	/* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
 } /* list() */
+int findlist (char *curdir, char *targetdir) {
+	DIR *dir;
+	struct dirent *dirstruct;
+	dir = opendir(curdir);
+	while (dirstruct = readdir(dir)) {
+		if (strcmp(dirstruct->d_name, targetdir)==0) {
+			return 1;
+		}
+	}
+	return 0;
+}
 
 char *getEnvValue(char *envvar) {
 	char value[BUFFERSIZE];
@@ -265,7 +281,7 @@ void ourcd(char *pathdir) {
 	if (strcmp(pathdir, "-")==0) {
 		chdir("..");
 	} else {
-		if (chdir(pathdir) != 0) {
+		if (chdir(pathdir) != 0) { 
 			printf("error, no such directory\n");
 		}
 	}
