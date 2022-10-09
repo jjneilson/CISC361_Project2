@@ -198,7 +198,7 @@ int sh( int argc, char **argv, char **envp )
 		struct pathelement *tmp = pe;
 		pe = pe->next;
 		free(tmp);
-	}
+	}                                      
 	free(prompt);
 	free(commandline);
 	free(owd);	
@@ -216,6 +216,7 @@ char *which(char *command, struct pathelement *pathlist )
 		}
 		temp = temp->next;
 	}
+	//do we need to free something here?                  
 return NULL;
 
 /* loop through pathlist until finding command and return it.  Return
@@ -249,6 +250,7 @@ void list ( char *dir )
 	}
   }
   closedir(dir2);
+  //free(dir2) does not do anything
 	/* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
 } /* list() */
