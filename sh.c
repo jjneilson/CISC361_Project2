@@ -149,12 +149,14 @@ int sh( int argc, char **argv, char **envp )
 		} else if (strcmp(args[0], "pwd")==0) {
 			printf("%s\n", pwd);
 		} else if (strcmp(args[0], "pid")==0) {
-			printf("%d\n", pid);
+			printf("%d\n", getpid());
 		} else if (strcmp(args[0], "cd")==0) {
 			if (args[1] == NULL) {
 				chdir(homedir);
+				pwd=homedir;
 			} else {
 				ourcd(args[1]);
+				pwd=args[1];
 			}
 		} else if (strcmp(args[0], "kill")==0) {
 			if (args[1] != NULL) {
