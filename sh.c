@@ -204,7 +204,8 @@ int sh( int argc, char **argv, char **envp )
 	}                                      
 	free(prompt);
 	free(commandline);
-	free(owd);	
+	free(owd);
+	free(pwd);
 	return 0;
 } /* sh() */
 
