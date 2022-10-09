@@ -45,10 +45,10 @@ int sh( int argc, char **argv, char **envp )
   	{
   		char **args = calloc(MAXARGS, sizeof(char*));		
 		char ans[BUFFERSIZE];
-    		int len;
-    		/* print your prompt */
-    		printf("%s [%s]> ", prefix, pwd);
-    		/* get command line and process */
+    	int len;
+    	/* print your prompt */
+    	printf("%s [%s]> ", prefix, pwd);
+    	/* get command line and process */
    		if (fgets(ans, BUFFERSIZE, stdin) != NULL) {
 	    	len = (int) strlen(ans);
 	    	if(len==1){
@@ -60,7 +60,7 @@ int sh( int argc, char **argv, char **envp )
 		char s[2] = " "; //delimiter for strtok
 		arg = strtok(ans,s);
 		argsct=0;
-		while (arg!=NULL && i<10){
+		while (arg!=NULL && argsct<10){
 			args[argsct]=arg;
 			arg=strtok(NULL,s);
 			argsct+=1;
@@ -154,7 +154,10 @@ int sh( int argc, char **argv, char **envp )
 			if (args[1] == NULL) {
 				chdir(homedir);
 				pwd=homedir;
-			} else {
+			} else if (strcmp(args[1], "-")==0) {
+				chdir("..");
+				pwd=getcwd(NULL,PATH_MAX+1);
+			}else {
 				if (findlist(pwd, args[1])==1) { //checks if directory exists
 					ourcd(args[1]);
 					pwd= strcat(pwd, "/");
