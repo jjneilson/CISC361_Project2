@@ -4,7 +4,7 @@
 
 /*	Partner names & emails
  *	John Neilson (jneilson@udel.edu)
- *	
+ *	William Hart (wilhart@udel.edu)
  */
 void sig_handler(int signal); 
 

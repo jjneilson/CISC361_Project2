@@ -89,13 +89,22 @@ int sh( int argc, char **argv, char **envp )
 			if (args[2] != NULL) {
 				fprintf(stderr, "too many arguements for given command\n");
 			} else if (args[1] == NULL) { //when your not given an environment variable 
+				char **envar = envp;	
+				while (*envar != 0 || *envar != NULL) {
+					//char *envalue = getEnvValue(*envar);
+					//printf("%s=%s\n",*envar, envalue);
+					printf("%s\n", *envar);
+					envar++;
+				}                                              
+				/*
 				for (char **envvar = envp; *envvar != 0; envvar++) {
-					char *env = *envvar;
+					//char *env = *envvar;
 					printf("%s=", env);
 					char *envvalue = getEnvValue(env);
 					printf("%s\n", envvalue);
 					free(envvalue);                                    
 				}
+				*/
 			} else { //when your given an environment variable 
 				char *argenv = getEnvValue(args[1]);
 				if (argenv != NULL) {
@@ -108,13 +117,13 @@ int sh( int argc, char **argv, char **envp )
 			if (args[3] != NULL) {
 				fprintf(stderr, "too many arguements for given command\n");
 			} else if (args[1] == NULL) { //no args
-				for (char **envvar = envp; *envvar != 0; envvar++) {
-                                	char *env = *envvar;
-                                	printf("%s=", env);
-                                	char *envvalue = getEnvValue(env);
-                                	printf("%s\n", envvalue);
-                                	free(envvalue);                              
-				}
+				char **envar = envp;	
+                                while (*envar != 0 || *envar != NULL) {
+                                	//char *envalue = getEnvValue(*envar);
+                                	printf("%s\n", *envar);
+					//printf("%s=%s\n",*envar, envalue);
+                                	envar++;
+                                }                                            
 			} else { //with one or more args
 				if (args[1] == "HOME") {
 					oursetenv(args[1], args[2]);
